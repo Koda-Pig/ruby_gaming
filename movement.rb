@@ -13,16 +13,24 @@ circle = Circle.new(
 	radius: 80,
 )
 
+sprite = Sprite.new(
+	'pig.png',
+	x: 100,
+	y: 100,
+	clip_width: 60,
+	animations: { fly: 1..3 }
+)
+
 on :key_held do |event|
 	case event.key
 	when 'up'
-		circle.y -= 1
+		sprite.y -= 1
 	when 'right'
-		circle.x += 1
+		sprite.x += 1
 	when 'down'
-		circle.y += 1
+		sprite.y += 1
 	when 'left'
-		circle.x -= 1
+		sprinte.x -= 1
 	end
 end
 
