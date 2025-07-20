@@ -22,14 +22,11 @@ Circle.new(
 )
 
 Triangle.new(
-	opacity: 0.5,
-	color: '#000000',
-	x1: 0,
-	x2: 50,
-	x3: 0,
-	y1: 0,
-	y2: 0,
-	y3: 50,
+	x1: 320, y1: 50,
+	x2: 540, y2: 430,
+	x3: 100, y3: 430,
+	color: ['green', 'red', 'blue']
 )
+
 
 show
