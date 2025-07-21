@@ -1,9 +1,13 @@
 require 'ruby2d'
 
-set width: 536
-set height: 506
+pressed_keys = Set.new
+canvas_width = 536
+canvas_height = 506
+sprite_width = 200
+sprite_height = 182
 
-pressed_keys = []
+set width: canvas_width
+set height: canvas_height
 
 # Image dimensions: 8400 × 182
 # Sprite frame dimensions: 200x182
@@ -12,12 +16,12 @@ pressed_keys = []
 # use the 'flip' property for left pointing animations
 sprite = Sprite.new(
 	'dog_sprite_horiz.png',
-	x: 100,
-	y: 100,
-	width: 200,
-	height: 182,
-	clip_width: 200,
-	clip_height: 182,
+	x: canvas_width / 2 - sprite_width / 2,
+	y: canvas_height / 2 - sprite_height / 2,
+	width: sprite_width,
+	height: sprite_height,
+	clip_width: sprite_width,
+	clip_height: sprite_height,
 	time: 60,
 	animations: {
 		stand: 0..6,
@@ -31,24 +35,28 @@ sprite = Sprite.new(
 
 sprite.play(animation: :stand, loop: true)
 
-on :key_held do |event|
+on :key_down do |event|
 	case event.key
 	when 'up'
 		# sprite.y -= 5
-		sprite.play(animation: :jump)
+		sprite.play(animation: :jump, loop: true)
 		pressed_keys << 'up' 
 	when 'right'
 		# sprite.x += 5
-		sprite.play(animation: :run)
+		sprite.play(animation: :run, loop: true)
 		pressed_keys << 'right'
 	when 'down'
 		# sprite.y += 5
-		sprite.play(animation: :sit)
+		sprite.play(animation: :sit, loop: true)
 		pressed_keys << 'down'
 	when 'left'
 		# sprite.x -= 5
-		sprite.play(animation: :run, flip: :horizontal)
+		sprite.play(animation: :run, flip: :horizontal, loop: true)
 		pressed_keys << 'left'
+	when 'space'
+		# sprite.x -= 5
+		sprite.play(animation: :roll, loop: true)
+		pressed_keys << 'space'
 	end
 end
 
