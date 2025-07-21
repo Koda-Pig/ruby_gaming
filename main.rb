@@ -34,24 +34,28 @@ sprite.play(animation: :stand, loop: true)
 on :key_held do |event|
 	case event.key
 	when 'up'
-		sprite.y -= 5
+		# sprite.y -= 5
 		sprite.play(animation: :jump)
 		pressed_keys << 'up' 
-		puts pressed_keys
 	when 'right'
-		sprite.x += 5
+		# sprite.x += 5
 		sprite.play(animation: :run)
+		pressed_keys << 'right'
 	when 'down'
-		sprite.y += 5
+		# sprite.y += 5
 		sprite.play(animation: :sit)
+		pressed_keys << 'down'
 	when 'left'
-		sprite.x -= 5
+		# sprite.x -= 5
 		sprite.play(animation: :run, flip: :horizontal)
+		pressed_keys << 'left'
 	end
 end
 
-# on :key_up do
-# 	sprite.stop
-# end
+on :key_up do |event|
+	sprite.stop
+	sprite.play(animation: :stand, loop: true)
+	pressed_keys.delete(event.key)
+end
 
 show
