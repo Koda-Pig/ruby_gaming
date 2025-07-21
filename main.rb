@@ -3,23 +3,7 @@ require 'ruby2d'
 set width: 536
 set height: 506
 
-
-# dimensions: 1800 × 2182
-# 9 columns and 12 rows in this sprite sheet
-# 1800 / 9 = 200
-# 2182 / 12 = 182
-# (8 * 7) * 200 + (2 * 9) * 200 + (2 * 5) * 200 = 16800
-# sprite = Sprite.new(
-# 	'dog_left_right_white.png',
-# 	x: 100,
-# 	y: 100,
-# 	clip_width: 200,
-# 	clip_height: 182,
-# 	animations: {
-# 		stand_right: 1..7,
-# 		stand_left: 2..7,
-# 	}
-# )
+pressed_keys = []
 
 # Image dimensions: 8400 × 182
 # Sprite frame dimensions: 200x182
@@ -52,6 +36,8 @@ on :key_held do |event|
 	when 'up'
 		sprite.y -= 5
 		sprite.play(animation: :jump)
+		pressed_keys << 'up' 
+		puts pressed_keys
 	when 'right'
 		sprite.x += 5
 		sprite.play(animation: :run)
