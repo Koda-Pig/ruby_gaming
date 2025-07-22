@@ -63,31 +63,17 @@ end
 
 update do
 	if pressed_keys.include?('up')
-		if last_direction == 'right'
-			player_state = 'jumping_right'
-		else
-			player_state = 'jumping_left'
-		end
+		player_state = "jumping_#{last_direction}"
 	elsif pressed_keys.include?('space')
-		if last_direction == 'right'
-			player_state = 'rolling_right'
-		else
-			player_state = 'rolling_left'
-		end
+		player_state = "rolling_#{last_direction}"
 	elsif pressed_keys.include?('down')
-		if last_direction == 'right'
-			player_state = 'sitting_right'
-		else
-			player_state = 'sitting_left'
-		end
+		player_state = "sitting_#{last_direction}"
 	elsif pressed_keys.include?('right')
 		player_state = 'running_right'
 	elsif pressed_keys.include?('left')
 		player_state = 'running_left'
-	elsif last_direction == 'right'
-		player_state = 'standing_right'
 	else
-		player_state = 'standing_left'
+		player_state = "standing_#{last_direction}"
 	end
 
 	case player_state
