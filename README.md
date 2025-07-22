@@ -3,7 +3,8 @@
 ## Resources
 
 1. https://www.ruby2d.com/
-2. https://youtu.be/dBw2JyV1ZUQ?si=QI_mQLoqqGE56A7i
+2. https://github.com/ruby2d/ruby2d
+3. https://youtu.be/dBw2JyV1ZUQ?si=QI_mQLoqqGE56A7i
 
 ## The Plan™
 

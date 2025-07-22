@@ -55,6 +55,8 @@ on :key_down do |event|
 		last_direction = 'left'
 	when 'space'
 		pressed_keys << 'space'
+	when 'esc'
+		close
 	end
 end
 
