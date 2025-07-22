@@ -6,6 +6,7 @@ canvas_width = 536
 canvas_height = 506
 sprite_width = 200
 sprite_height = 182
+last_direction = 'right'
 
 set width: canvas_width
 set height: canvas_height
@@ -34,34 +35,37 @@ sprite = Sprite.new(
 	}
 )
 
+# initial player state
 player_state = 'standing_right'
 
 on :key_down do |event|
 	case event.key
 	when 'up'
-		# sprite.y -= 5
-		# sprite.play(animation: :jump, loop: true)
 		pressed_keys << 'up' 
 	when 'right'
-		# sprite.x += 5
-		# sprite.play(animation: :run, loop: true)
 		pressed_keys << 'right'
 	when 'down'
-		# sprite.y += 5
-		# sprite.play(animation: :sit, loop: true)
 		pressed_keys << 'down'
 	when 'left'
-		# sprite.x -= 5
-		# sprite.play(animation: :run, flip: :horizontal, loop: true)
 		pressed_keys << 'left'
 	when 'space'
-		# sprite.x -= 5
-		# sprite.play(animation: :roll, loop: true)
 		pressed_keys << 'space'
 	end
 end
 
+on :key_up do |event|
+	sprite.stop
+	pressed_keys.delete(event.key)
+end
+
+
 update do
+	if pressed_keys.include?('right')
+		last_direction = 'right'
+	else
+		last_direction = 'left'
+	end
+
 	if pressed_keys.include?('up')
 		if pressed_keys.include?('right')
 			player_state = 'jumping_right'
@@ -84,8 +88,10 @@ update do
 		player_state = 'running_right'
 	elsif pressed_keys.include?('left')
 		player_state = 'running_left'
-	else
+	elsif last_direction = 'right'
 		player_state = 'standing_right'
+	else
+		player_state = 'standing_left'
 	end
 
 	case player_state
@@ -112,9 +118,5 @@ update do
 	end
 end
 
-on :key_up do |event|
-	sprite.stop
-	pressed_keys.delete(event.key)
-end
 
 show
