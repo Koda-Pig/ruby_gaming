@@ -44,10 +44,12 @@ on :key_down do |event|
 		pressed_keys << 'up' 
 	when 'right'
 		pressed_keys << 'right'
+		last_direction = 'right'
 	when 'down'
 		pressed_keys << 'down'
 	when 'left'
 		pressed_keys << 'left'
+		last_direction = 'left'
 	when 'space'
 		pressed_keys << 'space'
 	end
@@ -60,26 +62,20 @@ end
 
 
 update do
-	if pressed_keys.include?('right')
-		last_direction = 'right'
-	else
-		last_direction = 'left'
-	end
-
 	if pressed_keys.include?('up')
-		if pressed_keys.include?('right')
+		if last_direction == 'right'
 			player_state = 'jumping_right'
 		else
 			player_state = 'jumping_left'
 		end
 	elsif pressed_keys.include?('space')
-		if pressed_keys.include?('right')
+		if last_direction == 'right'
 			player_state = 'rolling_right'
 		else
 			player_state = 'rolling_left'
 		end
 	elsif pressed_keys.include?('down')
-		if pressed_keys.include?('right')
+		if last_direction == 'right'
 			player_state = 'sitting_right'
 		else
 			player_state = 'sitting_left'
@@ -88,7 +84,7 @@ update do
 		player_state = 'running_right'
 	elsif pressed_keys.include?('left')
 		player_state = 'running_left'
-	elsif last_direction = 'right'
+	elsif last_direction == 'right'
 		player_state = 'standing_right'
 	else
 		player_state = 'standing_left'
