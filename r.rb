@@ -41,6 +41,7 @@ set height: canvas_height
 # initial player state
 player_state = 'standing_right'
 
+# event handlers
 on :key_down do |event|
 	case event.key
 	when 'up'
@@ -63,26 +64,32 @@ on :key_up do |event|
 	pressed_keys.delete(event.key)
 end
 
-
+# animation loop
 update do
+	is_on_ground = @sprite.y >= canvas_height - @sprite.height
+
 	# set player state according to user input
-	if pressed_keys.include?('up')
-		player_state = "jumping_#{last_direction}"
-	elsif pressed_keys.include?('space')
-		player_state = "rolling_#{last_direction}"
-	elsif pressed_keys.include?('down')
-		player_state = "sitting_#{last_direction}"
-	elsif pressed_keys.include?('right')
-		player_state = 'running_right'
-	elsif pressed_keys.include?('left')
-		player_state = 'running_left'
-	else
-		player_state = "standing_#{last_direction}"
+	if velocity_y > 0
+		player_state = "falling_#{last_direction}"
+	elsif is_on_ground
+		if pressed_keys.include?('up')
+			player_state = "jumping_#{last_direction}"
+		elsif pressed_keys.include?('space')
+			player_state = "rolling_#{last_direction}"
+		elsif pressed_keys.include?('down')
+			player_state = "sitting_#{last_direction}"
+		elsif pressed_keys.include?('right')
+			player_state = 'running_right'
+		elsif pressed_keys.include?('left')
+			player_state = 'running_left'
+		else
+			player_state = "standing_#{last_direction}"
+		end
 	end
 
+	# player position
 	@sprite.y += velocity_y
 
-	is_on_ground = @sprite.y >= canvas_height - @sprite.height
 
 	if is_on_ground
 		velocity_y = 0
@@ -108,8 +115,14 @@ update do
 		@sprite.play(animation: :run, loop: true, flip: :horizontal)
 	when 'jumping_right'
 		@sprite.play(animation: :jump, loop: true)
+		if is_on_ground
+			velocity_y -= 20
+		end
 	when 'jumping_left'
 		@sprite.play(animation: :jump, loop: true, flip: :horizontal)
+		if is_on_ground
+			velocity_y -= 20
+		end
 	when 'sitting_right'
 		@sprite.play(animation: :sit, loop: true)
 	when 'sitting_left'
@@ -118,7 +131,12 @@ update do
 		@sprite.play(animation: :roll, loop: true)
 	when 'rolling_left'
 		@sprite.play(animation: :roll, loop: true, flip: :horizontal)
+	when 'falling_right'
+		@sprite.play(animation: :fall, loop: true)
+	when 'falling_left'
+		@sprite.play(animation: :fall, loop: true, flip: :horizontal)
 	end
+
 end
 
 
