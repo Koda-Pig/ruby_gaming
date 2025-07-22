@@ -4,8 +4,8 @@ pressed_keys = Set.new
 player_state = nil
 canvas_width = 536
 canvas_height = 506
-sprite_width = 200
-sprite_height = 182
+player_width = 200
+player_height = 182
 last_direction = 'right'
 velocity_y = 0
 weight = 1
@@ -18,14 +18,14 @@ set height: canvas_height
 # 16800 / 200 = 84 columns
 # All animations in this sprite sheet point right
 # use the 'flip' property for left pointing animations
-@sprite = Sprite.new(
+@player = Sprite.new(
 	'dog_sprite_horiz.png',
-	x: canvas_width / 2 - sprite_width / 2,
-	y: sprite_height * -1, # make him drop from the top for fun
-	width: sprite_width,
-	height: sprite_height,
-	clip_width: sprite_width,
-	clip_height: sprite_height,
+	x: canvas_width / 2 - player_width / 2,
+	y: player_height * -1, # make him drop from the top for fun
+	width: player_width,
+	height: player_height,
+	clip_width: player_width,
+	clip_height: player_height,
 	time: 60,
 	animations: {
 		stand: 0..6,
@@ -36,7 +36,6 @@ set height: canvas_height
 		roll: 35..41,
 	}
 )
-
 
 # initial player state
 player_state = 'standing_right'
@@ -60,22 +59,22 @@ on :key_down do |event|
 end
 
 on :key_up do |event|
-	@sprite.stop
+	@player.stop
 	pressed_keys.delete(event.key)
 end
 
 # animation loop
 update do
-	is_on_ground = @sprite.y >= canvas_height - @sprite.height
+	is_on_ground = @player.y >= canvas_height - @player.height
 
 	# set player state according to user input
-	if velocity_y > 0
+	if pressed_keys.include?('space')
+		player_state = "rolling_#{last_direction}"
+	elsif velocity_y > 0
 		player_state = "falling_#{last_direction}"
 	elsif is_on_ground
 		if pressed_keys.include?('up')
 			player_state = "jumping_#{last_direction}"
-		elsif pressed_keys.include?('space')
-			player_state = "rolling_#{last_direction}"
 		elsif pressed_keys.include?('down')
 			player_state = "sitting_#{last_direction}"
 		elsif pressed_keys.include?('right')
@@ -88,8 +87,7 @@ update do
 	end
 
 	# player position
-	@sprite.y += velocity_y
-
+	@player.y += velocity_y
 
 	if is_on_ground
 		velocity_y = 0
@@ -98,46 +96,43 @@ update do
 	end
 
 	# prevent player falling through floor
-	if @sprite.y > canvas_height - @sprite.height
-		@sprite.y = canvas_height - @sprite.height
+	if @player.y > canvas_height - @player.height
+		@player.y = canvas_height - @player.height
 	end
-
 
 	# handle each state
 	case player_state
 	when 'standing_right'
-		@sprite.play(animation: :stand, loop: true)
+		@player.play(animation: :stand, loop: true)
 	when 'standing_left'
-		@sprite.play(animation: :stand, loop: true, flip: :horizontal)
+		@player.play(animation: :stand, loop: true, flip: :horizontal)
 	when 'running_right'
-		@sprite.play(animation: :run, loop: true)
+		@player.play(animation: :run, loop: true)
 	when 'running_left'
-		@sprite.play(animation: :run, loop: true, flip: :horizontal)
+		@player.play(animation: :run, loop: true, flip: :horizontal)
 	when 'jumping_right'
-		@sprite.play(animation: :jump, loop: true)
+		@player.play(animation: :jump, loop: true)
 		if is_on_ground
 			velocity_y -= 20
 		end
 	when 'jumping_left'
-		@sprite.play(animation: :jump, loop: true, flip: :horizontal)
+		@player.play(animation: :jump, loop: true, flip: :horizontal)
 		if is_on_ground
 			velocity_y -= 20
 		end
 	when 'sitting_right'
-		@sprite.play(animation: :sit, loop: true)
+		@player.play(animation: :sit, loop: true)
 	when 'sitting_left'
-		@sprite.play(animation: :sit, loop: true, flip: :horizontal)
+		@player.play(animation: :sit, loop: true, flip: :horizontal)
 	when 'rolling_right'
-		@sprite.play(animation: :roll, loop: true)
+		@player.play(animation: :roll, loop: true)
 	when 'rolling_left'
-		@sprite.play(animation: :roll, loop: true, flip: :horizontal)
+		@player.play(animation: :roll, loop: true, flip: :horizontal)
 	when 'falling_right'
-		@sprite.play(animation: :fall, loop: true)
+		@player.play(animation: :fall, loop: true)
 	when 'falling_left'
-		@sprite.play(animation: :fall, loop: true, flip: :horizontal)
+		@player.play(animation: :fall, loop: true, flip: :horizontal)
 	end
-
 end
-
 
 show
