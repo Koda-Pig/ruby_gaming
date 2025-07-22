@@ -1,6 +1,7 @@
 require 'ruby2d'
 
 pressed_keys = Set.new
+player_state = nil
 canvas_width = 536
 canvas_height = 506
 sprite_width = 200
@@ -33,36 +34,86 @@ sprite = Sprite.new(
 	}
 )
 
-sprite.play(animation: :stand, loop: true)
+player_state = 'standing_right'
 
 on :key_down do |event|
 	case event.key
 	when 'up'
 		# sprite.y -= 5
-		sprite.play(animation: :jump, loop: true)
+		# sprite.play(animation: :jump, loop: true)
 		pressed_keys << 'up' 
 	when 'right'
 		# sprite.x += 5
-		sprite.play(animation: :run, loop: true)
+		# sprite.play(animation: :run, loop: true)
 		pressed_keys << 'right'
 	when 'down'
 		# sprite.y += 5
-		sprite.play(animation: :sit, loop: true)
+		# sprite.play(animation: :sit, loop: true)
 		pressed_keys << 'down'
 	when 'left'
 		# sprite.x -= 5
-		sprite.play(animation: :run, flip: :horizontal, loop: true)
+		# sprite.play(animation: :run, flip: :horizontal, loop: true)
 		pressed_keys << 'left'
 	when 'space'
 		# sprite.x -= 5
-		sprite.play(animation: :roll, loop: true)
+		# sprite.play(animation: :roll, loop: true)
 		pressed_keys << 'space'
+	end
+end
+
+update do
+	if pressed_keys.include?('up')
+		if pressed_keys.include?('right')
+			player_state = 'jumping_right'
+		else
+			player_state = 'jumping_left'
+		end
+	elsif pressed_keys.include?('space')
+		if pressed_keys.include?('right')
+			player_state = 'rolling_right'
+		else
+			player_state = 'rolling_left'
+		end
+	elsif pressed_keys.include?('down')
+		if pressed_keys.include?('right')
+			player_state = 'sitting_right'
+		else
+			player_state = 'sitting_left'
+		end
+	elsif pressed_keys.include?('right')
+		player_state = 'running_right'
+	elsif pressed_keys.include?('left')
+		player_state = 'running_left'
+	else
+		player_state = 'standing_right'
+	end
+
+	case player_state
+	when 'standing_right'
+		sprite.play(animation: :stand, loop: true)
+	when 'standing_left'
+		sprite.play(animation: :stand, loop: true, flip: :horizontal)
+	when 'running_right'
+		sprite.play(animation: :run, loop: true)
+	when 'running_left'
+		sprite.play(animation: :run, loop: true, flip: :horizontal)
+	when 'jumping_right'
+		sprite.play(animation: :jump, loop: true)
+	when 'jumping_left'
+		sprite.play(animation: :jump, loop: true, flip: :horizontal)
+	when 'sitting_right'
+		sprite.play(animation: :sit, loop: true)
+	when 'sitting_left'
+		sprite.play(animation: :sit, loop: true, flip: :horizontal)
+	when 'rolling_right'
+		sprite.play(animation: :roll, loop: true)
+	when 'rolling_left'
+		sprite.play(animation: :roll, loop: true, flip: :horizontal)
 	end
 end
 
 on :key_up do |event|
 	sprite.stop
-	sprite.play(animation: :stand, loop: true)
 	pressed_keys.delete(event.key)
 end
 
