@@ -1,17 +1,18 @@
 require 'ruby2d'
+require_relative 'background'
 
 pressed_keys = Set.new
 player_state = nil
-game_width = 536
-game_height = 506
+$game_width = 1280
+$game_height = 720
 player_width = 200
 player_height = 182
 last_direction = 'right'
 velocity_y = 0
 weight = 1
 
-set width: game_width
-set height: game_height
+set width: $game_width
+set height: $game_height
 
 # Image dimensions: 8400 × 182
 # Sprite frame dimensions: 200x182
@@ -20,7 +21,7 @@ set height: game_height
 # use the 'flip' property for left pointing animations
 @player = Sprite.new(
 	'dog_sprite_horiz.png',
-	x: game_width / 2 - player_width / 2,
+	x: $game_width / 2 - player_width / 2,
 	y: player_height * -1, # make him drop from the top for fun
 	width: player_width,
 	height: player_height,
@@ -68,7 +69,7 @@ end
 
 # animation loop
 update do
-	is_on_ground = @player.y >= game_height - @player.height
+	is_on_ground = @player.y >= $game_height - @player.height
 
 	# set player state according to user input
 	if pressed_keys.include?('space')
@@ -99,8 +100,8 @@ update do
 	end
 
 	# prevent player falling through floor
-	if @player.y > game_height - @player.height
-		@player.y = game_height - @player.height
+	if @player.y > $game_height - @player.height
+		@player.y = $game_height - @player.height
 	end
 
 	# handle each state
@@ -137,5 +138,8 @@ update do
 		@player.play(animation: :fall, loop: true, flip: :horizontal)
 	end
 end
+
+# Background
+update_background(50)
 
 show
