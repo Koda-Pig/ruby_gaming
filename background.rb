@@ -34,7 +34,6 @@ image_props = {
   **image_props 
 )
 
-
 def update_background(time)
   puts "Updating background at #{time}"
 end

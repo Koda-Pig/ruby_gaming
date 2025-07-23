@@ -65,6 +65,8 @@ on :key_up do |event|
 	pressed_keys.delete(event.key)
 end
 
+@bg_layer_0.y = 200
+
 # animation loop
 update do
 	is_on_ground = @player.y >= $GAME_HEIGHT - @player.height
