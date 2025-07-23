@@ -27,12 +27,12 @@ class Timer
 			radius: @max_radius - 2,
 			color: 'green',
 		)
-		@icon_text = Text.new(
-			'⚡',  # Lightning bolt for attack/roll
-			x: @x + @max_radius - 8,
-			y: @y + @max_radius - 12,
+		@status_text = Text.new(
+			'READY',
+			x: @x + @max_radius + 30,
+			y: @y + @max_radius - 14,
 			size: 20,
-			color: 'white',
+			color: '#555555',
 			z: 12
 		)
 	end
@@ -48,10 +48,11 @@ class Timer
 			# Shrink circle based on progress
 			@progress_circle.radius = (@max_radius - 2) * progress
 
+			@status_text.text = "Charging..."
+
 		elsif @remaining <= 0 && @active
 			@remaining = 0
 			@active = false
-			reset_visual
 		end
 	end
 
@@ -71,5 +72,6 @@ class Timer
 		@active = false # reset timer but don't start it
 		@progress_circle.radius = @max_radius - 2
 		@progress_circle.color = 'green'
+		@status_text.text = 'READY'
 	end
 end

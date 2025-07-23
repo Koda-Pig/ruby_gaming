@@ -17,3 +17,5 @@ The logic for disabling the ability to attack with the timer has an issue: when 
 This is what should happen instead:
 
 1. Once user lets GO of the attack button OR hits the ground, timer starts.
+
+Yeah the disabling the attack timer thing is buggy af. Need to take a serious look at how that's implemented 🤡
