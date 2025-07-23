@@ -32,12 +32,12 @@ class BackgroundLayer
     movement = base_speed * @speed_multiplier
 
     @images.each do |image|
-      if direction == 'forward'
+      if direction == 'right'
         image.x -= movement
-      elsif direction == 'backward'
+      elsif direction == 'left'
         image.x += movement
       else
-        puts "invalid direction #{direction}. Must be 'forward' or 'backward'"
+        raise ArgumentError, "invalid direction #{direction}. Must be 'right' or 'left'"
       end
 
       # Wrap around / tiling logic

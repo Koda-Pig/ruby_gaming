@@ -91,8 +91,6 @@ update do
 		@attack_timer.reset
 	end
 
-	puts pressed_keys
-
 	# set player state according to user input
 	if !is_on_ground
 		if @player_state.start_with?('attack') && !pressed_keys.include?('space')
@@ -141,10 +139,10 @@ update do
 		@player.play(animation: :stand, loop: true, flip: :horizontal)
 	when 'running_right'
 		@player.play(animation: :run, loop: true)
-		update_background('forward')
+		update_background('right')
 	when 'running_left'
 		@player.play(animation: :run, loop: true, flip: :horizontal)
-		update_background('backward')
+		update_background('left')
 	when 'jumping_right'
 		@player.play(animation: :jump, loop: true)
 		if is_on_ground
@@ -152,7 +150,7 @@ update do
 		end
 		# Only move when user is also holding directional key
 		if pressed_keys.include?('right')
-			update_background('forward')
+			update_background('right')
 		end
 	when 'jumping_left'
 		@player.play(animation: :jump, loop: true, flip: :horizontal)
@@ -161,7 +159,7 @@ update do
 		end
 		# Only move when user is also holding directional key
 		if pressed_keys.include?('left')
-			update_background('backward')
+			update_background('left')
 		end
 	when 'sitting_right'
 		@player.play(animation: :sit, loop: true)
@@ -169,21 +167,21 @@ update do
 		@player.play(animation: :sit, loop: true, flip: :horizontal)
 	when 'attacking_right'
 		@player.play(animation: :attack, loop: true)
-		update_background('forward', ATTACK_ACCELERATION)
+		update_background('right', ATTACK_ACCELERATION)
 	when 'attacking_left'
 		@player.play(animation: :attack, loop: true, flip: :horizontal)
-		update_background('backward', ATTACK_ACCELERATION)
+		update_background('left', ATTACK_ACCELERATION)
 	when 'falling_right'
 		@player.play(animation: :fall, loop: true)
 		# Only move when user is also holding directional key
 		if pressed_keys.include?('right')
-			update_background('forward')
+			update_background('right')
 		end
 	when 'falling_left'
 		@player.play(animation: :fall, loop: true, flip: :horizontal)
 		# Only move when user is also holding directional key
 		if pressed_keys.include?('left')
-			update_background('backward')
+			update_background('left')
 		end
 	end
 end
