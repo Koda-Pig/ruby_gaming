@@ -6,9 +6,9 @@ require_relative 'timer'
 set title: 'ruby gaming'
 
 pressed_keys = Set.new
-player_state = nil
+@player_state = 'standing_right'
 last_direction = 'right'
-player_can_roll = true
+@player_can_attack = true
 velocity_y = 0
 
 set width: $GAME_WIDTH
@@ -34,15 +34,19 @@ set height: $GAME_HEIGHT
 		fall: 14..20,
 		run: 21..29,
 		sit: 30..34,
-		roll: 35..41,
+		attack: 35..41,
 	}
 )
 
-# initial player state
-player_state = 'standing_right'
-
 # Timer
-@roll_timer = Timer.new(5.0)
+@attack_timer = Timer.new(2.0)
+
+def reset_attack
+	if @player_state.start_with?('attack')
+		@attack_timer.start
+		@player_can_attack = false
+	end
+end
 
 # event handlers
 on :key_down do |event|
@@ -59,8 +63,6 @@ on :key_down do |event|
 		last_direction = 'left'
 	when 'space'
 		pressed_keys << 'space'
-		# @roll_timer.start
-		# player_can_roll = false
 	# close the window
 	when 'escape'
 		close
@@ -70,10 +72,11 @@ end
 on :key_up do |event|
 	@player.stop
 	pressed_keys.delete(event.key)
-end
-
-def move_bg(bg)
-	puts bg
+	# Disable attacking and start the countdown timer once player
+	# stops attacking (releases the space key)
+	if event.key == 'space'
+		reset_attack
+	end
 end
 
 # animation loop
@@ -81,38 +84,37 @@ update do
 	is_on_ground = @player.y >= $GAME_HEIGHT - @player.height
 
 	# Roll timer logic
-	@roll_timer.update
+	@attack_timer.update
 
-	if @roll_timer.expired?
-		player_can_roll = true
-		@roll_timer.reset
+	if @attack_timer.expired?
+		@player_can_attack = true
+		@attack_timer.reset
 	end
 
-	# Check if player just landed after rolling
-	if is_on_ground && player_state.start_with?('rolling_')
-		@roll_timer.start
-		player_can_roll = false
+	if !is_on_ground && @player_state.start_with?('attack')
+		puts @player_state
 	end
+
 
 	# set player state according to user input
-	# Only roll when in the air
-	if pressed_keys.include?('space') && !is_on_ground && player_can_roll
-		player_state = "rolling_#{last_direction}"
-	# If not rolling and is in air, can only fall
-	elsif velocity_y > 0
-		player_state = "falling_#{last_direction}"
+	if !is_on_ground
+		if velocity_y > 0
+			@player_state = "falling_#{last_direction}"
+		elsif pressed_keys.include?('space') && @player_can_attack
+			@player_state = "attacking_#{last_direction}"
+		end
 	# all other player states must be entered from on the ground
 	elsif is_on_ground
 		if pressed_keys.include?('up')
-			player_state = "jumping_#{last_direction}"
+			@player_state = "jumping_#{last_direction}"
 		elsif pressed_keys.include?('down')
-			player_state = "sitting_#{last_direction}"
+			@player_state = "sitting_#{last_direction}"
 		elsif pressed_keys.include?('right')
-			player_state = 'running_right'
+			@player_state = 'running_right'
 		elsif pressed_keys.include?('left')
-			player_state = 'running_left'
+			@player_state = 'running_left'
 		else
-			player_state = "standing_#{last_direction}"
+			@player_state = "standing_#{last_direction}"
 		end
 	end
 
@@ -131,7 +133,7 @@ update do
 	end
 
 	# handle each state
-	case player_state
+	case @player_state
 	when 'standing_right'
 		@player.play(animation: :stand, loop: true)
 	when 'standing_left'
@@ -164,12 +166,12 @@ update do
 		@player.play(animation: :sit, loop: true)
 	when 'sitting_left'
 		@player.play(animation: :sit, loop: true, flip: :horizontal)
-	when 'rolling_right'
-		@player.play(animation: :roll, loop: true)
-		update_background('forward', ROLLING_ACCELERATION)
-	when 'rolling_left'
-		@player.play(animation: :roll, loop: true, flip: :horizontal)
-		update_background('backward', ROLLING_ACCELERATION)
+	when 'attacking_right'
+		@player.play(animation: :attack, loop: true)
+		update_background('forward', ATTACK_ACCELERATION)
+	when 'attacking_left'
+		@player.play(animation: :attack, loop: true, flip: :horizontal)
+		update_background('backward', ATTACK_ACCELERATION)
 	when 'falling_right'
 		@player.play(animation: :fall, loop: true)
 		# Only move when user is also holding directional key

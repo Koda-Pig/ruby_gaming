@@ -19,7 +19,7 @@ class Timer
 			x: @x + @max_radius,
 			y: @y + @max_radius,
 			radius: @max_radius,
-			color: 'black',
+			color: '#555555',
 		)
 		@progress_circle = Circle.new(
 			x: @x + @max_radius,
