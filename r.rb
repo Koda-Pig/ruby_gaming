@@ -123,10 +123,16 @@ update do
 		if is_on_ground
 			velocity_y -= 20
 		end
+		if pressed_keys.include?('right')
+			update_background('forward')
+		end
 	when 'jumping_left'
 		@player.play(animation: :jump, loop: true, flip: :horizontal)
 		if is_on_ground
 			velocity_y -= 20
+		end
+		if pressed_keys.include?('left')
+			update_background('backward')
 		end
 	when 'sitting_right'
 		@player.play(animation: :sit, loop: true)
@@ -138,8 +144,14 @@ update do
 		@player.play(animation: :roll, loop: true, flip: :horizontal)
 	when 'falling_right'
 		@player.play(animation: :fall, loop: true)
+		if pressed_keys.include?('right')
+			update_background('forward')
+		end
 	when 'falling_left'
 		@player.play(animation: :fall, loop: true, flip: :horizontal)
+		if pressed_keys.include?('left')
+			update_background('backward')
+		end
 	end
 end
 
