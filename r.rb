@@ -74,7 +74,8 @@ update do
 	is_on_ground = @player.y >= $GAME_HEIGHT - @player.height
 
 	# set player state according to user input
-	if pressed_keys.include?('space')
+	# Only roll when in the air
+	if pressed_keys.include?('space') & !is_on_ground
 		player_state = "rolling_#{last_direction}"
 	elsif velocity_y > 0
 		player_state = "falling_#{last_direction}"
@@ -142,8 +143,10 @@ update do
 		@player.play(animation: :sit, loop: true, flip: :horizontal)
 	when 'rolling_right'
 		@player.play(animation: :roll, loop: true)
+		update_background('forward', ROLLING_ACCELERATION)
 	when 'rolling_left'
 		@player.play(animation: :roll, loop: true, flip: :horizontal)
+		update_background('backward', ROLLING_ACCELERATION)
 	when 'falling_right'
 		@player.play(animation: :fall, loop: true)
 		# Only move when user is also holding directional key

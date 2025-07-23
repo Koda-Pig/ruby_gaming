@@ -60,8 +60,8 @@ BG_LAYERS_COUNT.times do |i|
   @bg_layers << BackgroundLayer.new("backgrounds/layers/layer_#{i}.webp", i)
 end
 
-def update_background(direction)
+def update_background(direction, acceleration = 1)
   @bg_layers.each do |layer|
-    layer.update(direction, PLAYER_SPEED)
+    layer.update(direction, PLAYER_SPEED * acceleration)
   end
 end
