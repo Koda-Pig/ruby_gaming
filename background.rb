@@ -1,6 +1,9 @@
 require_relative 'constants'
 
+# 7 layers for parallax background
 BG_LAYERS_COUNT = 7
+# 2 images per layer so that they can be tiled one after the other
+BG_IMAGES_PER_LAYER = 2
 
 class BackgroundLayer
   # Makes these properties on the class readable + writable
@@ -41,12 +44,12 @@ class BackgroundLayer
       # If image has moved off completely to left side
       if image.x + $GAME_WIDTH < 0
         # Find the rightmost image and position this one after it
-        image.x += 2 * $GAME_WIDTH
+        image.x += BG_IMAGES_PER_LAYER * $GAME_WIDTH
       end
       # if image has moved off completely to right side
       if image.x > $GAME_WIDTH
         # find leftmost image and position this one before it
-        image.x -= 2 * $GAME_WIDTH
+        image.x -= BG_IMAGES_PER_LAYER * $GAME_WIDTH
       end
     end
   end
