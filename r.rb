@@ -1,12 +1,14 @@
 require 'ruby2d'
 require_relative 'constants'
 require_relative 'background'
+require_relative 'timer'
 
 set title: 'ruby gaming'
 
 pressed_keys = Set.new
 player_state = nil
 last_direction = 'right'
+player_can_roll = true
 velocity_y = 0
 
 set width: $GAME_WIDTH
@@ -39,6 +41,9 @@ set height: $GAME_HEIGHT
 # initial player state
 player_state = 'standing_right'
 
+# Timer
+@roll_timer = Timer.new(5.0)
+
 # event handlers
 on :key_down do |event|
 	case event.key
@@ -54,6 +59,8 @@ on :key_down do |event|
 		last_direction = 'left'
 	when 'space'
 		pressed_keys << 'space'
+		# @roll_timer.start
+		# player_can_roll = false
 	# close the window
 	when 'escape'
 		close
@@ -73,9 +80,22 @@ end
 update do
 	is_on_ground = @player.y >= $GAME_HEIGHT - @player.height
 
+	@roll_timer.update
+
+	if @roll_timer.expired?
+		player_can_roll = true
+		@roll_timer.reset
+	end
+
+	# Check if player just landed after rolling
+	if is_on_ground && player_state.start_with?('rolling_')
+		@roll_timer.start
+		player_can_roll = false
+	end
+
 	# set player state according to user input
 	# Only roll when in the air
-	if pressed_keys.include?('space') & !is_on_ground
+	if pressed_keys.include?('space') && !is_on_ground && player_can_roll
 		player_state = "rolling_#{last_direction}"
 	elsif velocity_y > 0
 		player_state = "falling_#{last_direction}"
