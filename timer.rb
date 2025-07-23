@@ -27,6 +27,14 @@ class Timer
 			radius: @max_radius - 2,
 			color: 'green',
 		)
+		@icon_text = Text.new(
+			'⚡',  # Lightning bolt for attack/roll
+			x: @x + @max_radius - 8,
+			y: @y + @max_radius - 12,
+			size: 20,
+			color: 'white',
+			z: 12
+		)
 	end
 
 	def update
