@@ -65,7 +65,9 @@ on :key_up do |event|
 	pressed_keys.delete(event.key)
 end
 
-@bg_layer_0.y = 200
+def move_bg(bg)
+	puts bg
+end
 
 # animation loop
 update do
@@ -112,8 +114,10 @@ update do
 		@player.play(animation: :stand, loop: true, flip: :horizontal)
 	when 'running_right'
 		@player.play(animation: :run, loop: true)
+		update_background('forward')
 	when 'running_left'
 		@player.play(animation: :run, loop: true, flip: :horizontal)
+		update_background('backward')
 	when 'jumping_right'
 		@player.play(animation: :jump, loop: true)
 		if is_on_ground

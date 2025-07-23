@@ -34,6 +34,25 @@ image_props = {
   **image_props 
 )
 
-def update_background(time)
-  puts "Updating background at #{time}"
+@bg_layers = [
+  @bg_layer_0,
+  @bg_layer_1,
+  @bg_layer_2,
+  @bg_layer_3,
+  @bg_layer_4,
+  @bg_layer_5,
+  @bg_layer_6,
+]
+
+def update_background(direction)
+  @bg_layers.each_with_index do |layer, index|
+    movement_speed = index * 0.05 # speed increases for each layer for parallax effect
+    if direction == 'forward'
+      layer.x -= PLAYER_SPEED
+    elsif direction == 'backward'
+      layer.x += PLAYER_SPEED
+    else
+      puts "invalid direction #{direction}. Must be 'forward' or 'backward'"
+    end
+  end
 end
