@@ -7,25 +7,43 @@ require_relative 'constants'
 class Timer
 	attr_accessor :duration, :remaining, :active
 
-	def initialize(duration = 5.0, x = 10, y = 10)
+	def initialize(duration = 5.0, x = 10, y = 10, radius = 20)
 		@duration = duration
+		@x = x
+		@y = y
 		@remaining = duration
 		@active = false
+		@max_radius = radius
 		
-		@text = Text.new(
-			"Timer: #{@remaining.round(1)}",
-			x: x,
-			y: y,
-			size: 20,
-			color: 'white'
+		@background_circle = Circle.new(
+			x: @x + @max_radius,
+			y: @y + @max_radius,
+			radius: @max_radius,
+			color: 'black',
+		)
+		@progress_circle = Circle.new(
+			x: @x + @max_radius,
+			y: @y + @max_radius,
+			radius: @max_radius - 2,
+			color: 'green',
 		)
 	end
 
 	def update
 		if @active && @remaining > 0
 			@remaining -= 1.0 / 60.0 # Subtract frame time (assuming 60 Fps)
+			@progress_circle.color = 'red'
 
-			@text.text = "Timer: #{@remaining.round(1)}"
+			# Get progress (0 - 1)
+			progress = @remaining / @duration
+
+			# Shrink circle based on progress
+			@progress_circle.radius = (@max_radius - 2) * progress
+
+		elsif @remaining <= 0 && @active
+			@remaining = 0
+			@active = false
+			reset_visual
 		end
 	end
 
@@ -43,7 +61,7 @@ class Timer
 	def reset
 		@remaining = @duration
 		@active = false # reset timer but don't start it
-		@text.text = "Timer: #{@remaining.round(1)}"
-		@text.color = 'white'
+		@progress_circle.radius = @max_radius - 2
+		@progress_circle.color = 'green'
 	end
 end

@@ -80,6 +80,7 @@ end
 update do
 	is_on_ground = @player.y >= $GAME_HEIGHT - @player.height
 
+	# Roll timer logic
 	@roll_timer.update
 
 	if @roll_timer.expired?
@@ -97,8 +98,10 @@ update do
 	# Only roll when in the air
 	if pressed_keys.include?('space') && !is_on_ground && player_can_roll
 		player_state = "rolling_#{last_direction}"
+	# If not rolling and is in air, can only fall
 	elsif velocity_y > 0
 		player_state = "falling_#{last_direction}"
+	# all other player states must be entered from on the ground
 	elsif is_on_ground
 		if pressed_keys.include?('up')
 			player_state = "jumping_#{last_direction}"
