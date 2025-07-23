@@ -33,7 +33,6 @@ class Timer
 			y: @y + @max_radius - 14,
 			size: 20,
 			color: '#555555',
-			z: 12
 		)
 	end
 
