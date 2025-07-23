@@ -91,28 +91,29 @@ update do
 		@attack_timer.reset
 	end
 
-	if !is_on_ground && @player_state.start_with?('attack')
-		puts @player_state
-	end
-
+	puts pressed_keys
 
 	# set player state according to user input
 	if !is_on_ground
-		if velocity_y > 0
+		if @player_state.start_with?('attack') && !pressed_keys.include?('space')
+			if velocity_y > 0
+				@player_state = "falling_#{last_direction}"
+			else
+				@player_state = "jumping_#{last_direction}"
+			end
+		elsif velocity_y > 0
 			@player_state = "falling_#{last_direction}"
 		elsif pressed_keys.include?('space') && @player_can_attack
 			@player_state = "attacking_#{last_direction}"
 		end
 	# all other player states must be entered from on the ground
 	elsif is_on_ground
-		if pressed_keys.include?('up')
+		if pressed_keys.include?('up') && !pressed_keys.include?('space')
 			@player_state = "jumping_#{last_direction}"
 		elsif pressed_keys.include?('down')
 			@player_state = "sitting_#{last_direction}"
-		elsif pressed_keys.include?('right')
-			@player_state = 'running_right'
-		elsif pressed_keys.include?('left')
-			@player_state = 'running_left'
+		elsif pressed_keys.include?('right') || pressed_keys.include?('left')
+			@player_state = "running_#{last_direction}"
 		else
 			@player_state = "standing_#{last_direction}"
 		end
