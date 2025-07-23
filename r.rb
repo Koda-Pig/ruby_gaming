@@ -49,7 +49,7 @@ end
 # event handlers
 on :key_down do |event|
 	case event.key
-	when *VALID_KEYS
+	when *VALID_KEYS # using the 'splat' operator here to expand the VALID_KEYS array
 		pressed_keys << event.key
 		last_direction = event.key if ['left', 'right'].include?(event.key)
 	when 'escape'
