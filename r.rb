@@ -42,28 +42,16 @@ set height: $GAME_HEIGHT
 @attack_timer = Timer.new(2.0)
 
 def reset_attack
-	if @player_state.start_with?('attack')
-		@attack_timer.start
-		@player_can_attack = false
-	end
+	@attack_timer.start
+	@player_can_attack = false
 end
 
 # event handlers
 on :key_down do |event|
 	case event.key
-	when 'up'
-		pressed_keys << 'up' 
-	when 'right'
-		pressed_keys << 'right'
-		last_direction = 'right'
-	when 'down'
-		pressed_keys << 'down'
-	when 'left'
-		pressed_keys << 'left'
-		last_direction = 'left'
-	when 'space'
-		pressed_keys << 'space'
-	# close the window
+	when *VALID_KEYS
+		pressed_keys << event.key
+		last_direction = event.key if ['left', 'right'].include?(event.key)
 	when 'escape'
 		close
 	end
@@ -72,11 +60,6 @@ end
 on :key_up do |event|
 	@player.stop
 	pressed_keys.delete(event.key)
-	# Disable attacking and start the countdown timer once player
-	# stops attacking (releases the space key)
-	if event.key == 'space'
-		reset_attack
-	end
 end
 
 # animation loop

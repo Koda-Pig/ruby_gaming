@@ -5,3 +5,4 @@ PLAYER_HEIGHT = 182
 PLAYER_WEIGHT = 1
 PLAYER_SPEED = 1.5
 ATTACK_ACCELERATION = 3
+VALID_KEYS = ['up', 'down', 'left', 'right', 'space']

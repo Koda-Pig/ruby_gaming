@@ -3,7 +3,6 @@ require_relative 'constants'
 # In Ruby, ⁠1 / 60 performs integer division and returns ⁠0,
 # while ⁠1.0 / 60.0 performs floating-point division, yielding ⁠0.016666666666666666.
 # Use floats for accurate decimal results.
-
 class Timer
 	attr_accessor :duration, :remaining, :active
 
