@@ -123,6 +123,7 @@ update do
 		if is_on_ground
 			velocity_y -= 20
 		end
+		# Only move when user is also holding directional key
 		if pressed_keys.include?('right')
 			update_background('forward')
 		end
@@ -131,6 +132,7 @@ update do
 		if is_on_ground
 			velocity_y -= 20
 		end
+		# Only move when user is also holding directional key
 		if pressed_keys.include?('left')
 			update_background('backward')
 		end
@@ -144,11 +146,13 @@ update do
 		@player.play(animation: :roll, loop: true, flip: :horizontal)
 	when 'falling_right'
 		@player.play(animation: :fall, loop: true)
+		# Only move when user is also holding directional key
 		if pressed_keys.include?('right')
 			update_background('forward')
 		end
 	when 'falling_left'
 		@player.play(animation: :fall, loop: true, flip: :horizontal)
+		# Only move when user is also holding directional key
 		if pressed_keys.include?('left')
 			update_background('backward')
 		end
