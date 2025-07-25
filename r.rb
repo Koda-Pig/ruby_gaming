@@ -82,10 +82,10 @@ update do
 			else
 				@player_state = "jumping_#{last_direction}"
 			end
-		elsif velocity_y > 0
-			@player_state = "falling_#{last_direction}"
 		elsif pressed_keys.include?('space') && @player_can_attack
 			@player_state = "attacking_#{last_direction}"
+		elsif velocity_y > 0
+			@player_state = "falling_#{last_direction}"
 		end
 	# all other player states must be entered from on the ground
 	elsif is_on_ground
