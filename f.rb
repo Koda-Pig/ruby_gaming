@@ -15,19 +15,19 @@ def centered(position, size)
 end
 
 def is_colliding?(sprite_a, sprite_b)
-	# check if radius's overlap
-	# calculate the distance between their centers and compare it to the sum of their radii
 	centered_a_x = centered(sprite_a.x, sprite_a.width)
 	centered_b_x = centered(sprite_b.x, sprite_b.width)
 	centered_a_y = centered(sprite_a.y, sprite_a.height)
 	centered_b_y = centered(sprite_b.y, sprite_b.height)
+	dist_between_centers = (centered_a_x - centered_b_x).abs + (centered_a_y - centered_b_y).abs
+
 	radii_a = [sprite_a.width, sprite_a.height].max * 0.5
 	radii_b = [sprite_b.width, sprite_b.height].max * 0.5
-
-	dist_between_centers = (centered_a_x - centered_b_x).abs + (centered_a_y - centered_b_y).abs
 	sum_of_radii = radii_a + radii_b
 
-	return sum_of_radii > dist_between_centers
+	radii_overlap = sum_of_radii > dist_between_centers
+	
+	return radii_overlap
 end
 
 # event handlers
@@ -50,7 +50,9 @@ end
 update do
 	@player.update
 	@enemy.update(@player.current_moving_direction)
-	is_colliding?(@player.sprite, @enemy.sprite)
+	if is_colliding?(@player.sprite, @enemy.sprite)
+		puts "is colliding"
+	end
 end
 
 show

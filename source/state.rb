@@ -32,12 +32,6 @@ class PlayerState
 				attack: 35..41,
 			}
 		)
-		@circle = Circle.new(
-			x: @sprite.x + @sprite.width * 0.5,
-			y: @sprite.y + @sprite.height * 0.5,
-			radius: @sprite.width * 0.5,
-			opacity: 0.5
-		)
 		@pressed_keys = Set.new
 		@can_attack = true
 		@last_direction = 'right'
@@ -91,11 +85,6 @@ class PlayerState
 		@bg_layers.each do |layer|
 			layer.update(direction, PLAYER_SPEED * acceleration)
 		end
-	end
-
-	def draw_collision_helper_circle
-		@circle.x = @sprite.x + @sprite.width * 0.5
-		@circle.y = @sprite.y + @sprite.height * 0.5
 	end
 
 	def update
@@ -185,7 +174,5 @@ class PlayerState
 				stand
 			end
 		end
-
-		draw_collision_helper_circle
 	end
 end

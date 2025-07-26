@@ -22,12 +22,6 @@ class Enemy
 				crawl: 0..5,
 			}
 		)
-		@circle = Circle.new(
-			x: @sprite.x + @sprite.width * 0.5,
-			y: @sprite.y + @sprite.height * 0.5,
-			radius: @sprite.width * 0.5,
-			opacity: 0.5
-		)
 		@sprite.play(animation: :crawl, loop: true)
   end
 
@@ -35,13 +29,10 @@ class Enemy
 		case player_movement_direction
 		when 'left'
 			@sprite.x += PLAYER_SPEED
-			@circle.x += PLAYER_SPEED
 		when 'right'
 			@sprite.x -= PLAYER_SPEED + ENEMY_SPEED
-			@circle.x -= PLAYER_SPEED + ENEMY_SPEED
 		when nil
 			@sprite.x -= ENEMY_SPEED
-			@circle.x -= ENEMY_SPEED
 		end
 	end
 end
