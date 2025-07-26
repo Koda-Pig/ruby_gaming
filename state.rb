@@ -4,9 +4,7 @@ require_relative 'timer'
 
 class PlayerState
   attr_accessor :pressed_keys
-	attr_accessor :can_attack
 	attr_accessor :last_direction
-	attr_accessor :velocity_y
 	attr_accessor :sprite
 
   def initialize(initial_action)
