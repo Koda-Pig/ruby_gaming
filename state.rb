@@ -42,9 +42,7 @@ class PlayerState
 
   end
 
-	def fall
-		@action = "falling_#{@last_direction}"
-	end
+	def fall @action = "falling_#{@last_direction}"
 	def jump
 		@action = "jumping_#{@last_direction}"
 	end
