@@ -2,14 +2,14 @@ require 'ruby2d'
 require_relative 'constants'
 require_relative 'background'
 require_relative 'timer'
+require_relative 'state'
 
 set title: 'ruby gaming'
 
-pressed_keys = Set.new
-@player_state = 'standing_right'
 last_direction = 'right'
-@player_can_attack = true
 velocity_y = 0
+
+@state = PlayerState.new('standing_right')
 
 set width: $GAME_WIDTH
 set height: $GAME_HEIGHT
@@ -43,14 +43,14 @@ set height: $GAME_HEIGHT
 
 def reset_attack
 	@attack_timer.start
-	@player_can_attack = false
+	@state.can_attack = false
 end
 
 # event handlers
 on :key_down do |event|
 	case event.key
 	when *VALID_KEYS # using the 'splat' operator here to expand the VALID_KEYS array
-		pressed_keys << event.key
+		@state.pressed_keys << event.key
 		last_direction = event.key if ['left', 'right'].include?(event.key)
 	when 'escape'
 		close
@@ -59,7 +59,7 @@ end
 
 on :key_up do |event|
 	@player.stop
-	pressed_keys.delete(event.key)
+	@state.pressed_keys.delete(event.key)
 end
 
 # animation loop
@@ -70,33 +70,33 @@ update do
 	@attack_timer.update
 
 	if @attack_timer.expired?
-		@player_can_attack = true
+		@state.can_attack = true
 		@attack_timer.reset
 	end
 
 	# set player state according to user input
 	if !is_on_ground
-		if @player_state.start_with?('attack') && !pressed_keys.include?('space')
+		if @state.action.start_with?('attack') && !@state.pressed_keys.include?('space')
 			if velocity_y > 0
-				@player_state = "falling_#{last_direction}"
+				@state.action = "falling_#{last_direction}"
 			else
-				@player_state = "jumping_#{last_direction}"
+				@state.action = "jumping_#{last_direction}"
 			end
-		elsif pressed_keys.include?('space') && @player_can_attack
-			@player_state = "attacking_#{last_direction}"
+		elsif @state.pressed_keys.include?('space') && @state.can_attack
+			@state.action = "attacking_#{last_direction}"
 		elsif velocity_y > 0
-			@player_state = "falling_#{last_direction}"
+			@state.action = "falling_#{last_direction}"
 		end
 	# all other player states must be entered from on the ground
 	elsif is_on_ground
-		if pressed_keys.include?('up') && !pressed_keys.include?('space')
-			@player_state = "jumping_#{last_direction}"
-		elsif pressed_keys.include?('down')
-			@player_state = "sitting_#{last_direction}"
-		elsif pressed_keys.include?('right') || pressed_keys.include?('left')
-			@player_state = "running_#{last_direction}"
+		if @state.pressed_keys.include?('up') && !@state.pressed_keys.include?('space')
+			@state.action = "jumping_#{last_direction}"
+		elsif @state.pressed_keys.include?('down')
+			@state.action = "sitting_#{last_direction}"
+		elsif @state.pressed_keys.include?('right') || @state.pressed_keys.include?('left')
+			@state.action = "running_#{last_direction}"
 		else
-			@player_state = "standing_#{last_direction}"
+			@state.action = "standing_#{last_direction}"
 		end
 	end
 
@@ -115,7 +115,7 @@ update do
 	end
 
 	# handle each state
-	case @player_state
+	case @state.action
 	when 'standing_right'
 		@player.play(animation: :stand, loop: true)
 	when 'standing_left'
@@ -132,7 +132,7 @@ update do
 			velocity_y -= 20
 		end
 		# Only move when user is also holding directional key
-		if pressed_keys.include?('right')
+		if @state.pressed_keys.include?('right')
 			update_background('right')
 		end
 	when 'jumping_left'
@@ -141,7 +141,7 @@ update do
 			velocity_y -= 20
 		end
 		# Only move when user is also holding directional key
-		if pressed_keys.include?('left')
+		if @state.pressed_keys.include?('left')
 			update_background('left')
 		end
 	when 'sitting_right'
@@ -157,13 +157,13 @@ update do
 	when 'falling_right'
 		@player.play(animation: :fall, loop: true)
 		# Only move when user is also holding directional key
-		if pressed_keys.include?('right')
+		if @state.pressed_keys.include?('right')
 			update_background('right')
 		end
 	when 'falling_left'
 		@player.play(animation: :fall, loop: true, flip: :horizontal)
 		# Only move when user is also holding directional key
-		if pressed_keys.include?('left')
+		if @state.pressed_keys.include?('left')
 			update_background('left')
 		end
 	end
