@@ -124,10 +124,7 @@ class PlayerState
 		when 'jumping_left'
 			@sprite.play(animation: :jump, loop: true, flip: :horizontal)
 			accelerate_up if is_on_ground?
-			# Only move when user is also holding directional key
-			if pressed_keys.include?('left')
-				update_background('left')
-			end
+			update_background('left') if pressed_keys.include?('left')
 		when 'sitting_right'
 			@sprite.play(animation: :sit, loop: true)
 		when 'sitting_left'
@@ -140,16 +137,10 @@ class PlayerState
 			update_background('left', ATTACK_ACCELERATION)
 		when 'falling_right'
 			@sprite.play(animation: :fall, loop: true)
-			# Only move when user is also holding directional key
-			if @pressed_keys.include?('right')
-				update_background('right')
-			end
+			update_background('right') if @pressed_keys.include?('right')
 		when 'falling_left'
 			@sprite.play(animation: :fall, loop: true, flip: :horizontal)
-			# Only move when user is also holding directional key
-			if @pressed_keys.include?('left')
-				update_background('left')
-			end
+			update_background('left') if @pressed_keys.include?('left')
 		end
 
 		if !is_on_ground?
