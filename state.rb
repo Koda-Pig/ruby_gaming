@@ -1,4 +1,6 @@
 require_relative 'constants'
+require_relative 'background'
+require_relative 'timer'
 
 class PlayerState
   attr_accessor :pressed_keys
@@ -10,6 +12,10 @@ class PlayerState
 
   def initialize(initial_action)
 		@action = initial_action
+		@bg_layers = []
+		BG_LAYERS_COUNT.times do |i|
+			@bg_layers << BackgroundLayer.new("backgrounds/layers/layer_#{i}.webp", i)
+		end
 		@sprite = Sprite.new(
 			'dog_sprite_horiz.png',
 			x: $GAME_WIDTH / 2 - PLAYER_WIDTH / 2,
@@ -33,6 +39,7 @@ class PlayerState
 		@last_direction = 'right'
 		@velocity_y = 0
 		@attack_timer = Timer.new(2.0)
+
   end
 
 	def fall
@@ -72,6 +79,12 @@ class PlayerState
 		@sprite.y > $GAME_HEIGHT - @sprite.height
 	end
 
+	def update_background(direction, acceleration = 1)
+		@bg_layers.each do |layer|
+			layer.update(direction, PLAYER_SPEED * acceleration)
+		end
+	end
+
 	def update
 		# Roll timer logic
 		end_attack_timeout if @attack_timer.expired?
@@ -90,56 +103,56 @@ class PlayerState
 			@sprite.y = $GAME_HEIGHT - @sprite.height
 		end
 
-			# handle each state
-		case @.action
+		# handle each state
+		case @action
 		when 'standing_right'
-			sprite.play(animation: :stand, loop: true)
+			@sprite.play(animation: :stand, loop: true)
 		when 'standing_left'
-			sprite.play(animation: :stand, loop: true, flip: :horizontal)
+			@sprite.play(animation: :stand, loop: true, flip: :horizontal)
 		when 'running_right'
-			sprite.play(animation: :run, loop: true)
+			@sprite.play(animation: :run, loop: true)
 			update_background('right')
 		when 'running_left'
-			sprite.play(animation: :run, loop: true, flip: :horizontal)
+			@sprite.play(animation: :run, loop: true, flip: :horizontal)
 			update_background('left')
 		when 'jumping_right'
-			sprite.play(animation: :jump, loop: true)
+			@sprite.play(animation: :jump, loop: true)
 			if is_on_ground?
-				velocity_y -= 20
+				@velocity_y -= 20
 			end
 			# Only move when user is also holding directional key
 			if pressed_keys.include?('right')
 				update_background('right')
 			end
 		when 'jumping_left'
-			sprite.play(animation: :jump, loop: true, flip: :horizontal)
+			@sprite.play(animation: :jump, loop: true, flip: :horizontal)
 			if is_on_ground?
-				velocity_y -= 20
+				@velocity_y -= 20
 			end
 			# Only move when user is also holding directional key
 			if pressed_keys.include?('left')
 				update_background('left')
 			end
 		when 'sitting_right'
-			sprite.play(animation: :sit, loop: true)
+			@sprite.play(animation: :sit, loop: true)
 		when 'sitting_left'
-			sprite.play(animation: :sit, loop: true, flip: :horizontal)
+			@sprite.play(animation: :sit, loop: true, flip: :horizontal)
 		when 'attacking_right'
-			sprite.play(animation: :attack, loop: true)
+			@sprite.play(animation: :attack, loop: true)
 			update_background('right', ATTACK_ACCELERATION)
 		when 'attacking_left'
-			sprite.play(animation: :attack, loop: true, flip: :horizontal)
+			@sprite.play(animation: :attack, loop: true, flip: :horizontal)
 			update_background('left', ATTACK_ACCELERATION)
 		when 'falling_right'
-			sprite.play(animation: :fall, loop: true)
+			@sprite.play(animation: :fall, loop: true)
 			# Only move when user is also holding directional key
-			if pressed_keys.include?('right')
+			if @pressed_keys.include?('right')
 				update_background('right')
 			end
 		when 'falling_left'
-			sprite.play(animation: :fall, loop: true, flip: :horizontal)
+			@sprite.play(animation: :fall, loop: true, flip: :horizontal)
 			# Only move when user is also holding directional key
-			if pressed_keys.include?('left')
+			if @pressed_keys.include?('left')
 				update_background('left')
 			end
 		end
@@ -174,4 +187,3 @@ class PlayerState
 		end
 	end
 end
-
