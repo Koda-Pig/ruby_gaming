@@ -9,30 +9,6 @@ set title: 'ruby gaming'
 set width: $GAME_WIDTH
 set height: $GAME_HEIGHT
 
-# Image dimensions: 8400 × 182
-# Sprite frame dimensions: 200x182
-# 16800 / 200 = 84 columns
-# All animations in this sprite sheet point right
-# use the 'flip' property for left pointing animations
-# player_sprite = Sprite.new(
-# 	'dog_sprite_horiz.png',
-# 	x: $GAME_WIDTH / 2 - PLAYER_WIDTH / 2,
-# 	y: PLAYER_HEIGHT * -1, # make him drop from the top for fun
-# 	width: PLAYER_WIDTH,
-# 	height: PLAYER_HEIGHT,
-# 	clip_width: PLAYER_WIDTH,
-# 	clip_height: PLAYER_HEIGHT,
-# 	time: 60,
-# 	animations: {
-# 		stand: 0..6,
-# 		jump: 7..13,
-# 		fall: 14..20,
-# 		run: 21..29,
-# 		sit: 30..34,
-# 		attack: 35..41,
-# 	}
-# )
-
 @state = PlayerState.new('standing_right')
 
 # Timer
@@ -44,8 +20,8 @@ def start_attack_timeout
 end
 
 def end_attack_timeout
-	@state.can_attack = true
 	@attack_timer.reset
+	@state.can_attack = true
 end
 
 # event handlers
@@ -66,28 +42,26 @@ end
 
 # animation loop
 update do
-	is_on_ground = @state.sprite.y >= $GAME_HEIGHT - @state.sprite.height
-
 	# Roll timer logic
 	@attack_timer.update
 	end_attack_timeout if @attack_timer.expired?
 
 	# set player state according to user input
-	if !is_on_ground
+	if !@state.is_on_ground?
 		if @state.action.start_with?('attack') && !@state.pressed_keys.include?('space')
 			start_attack_timeout
 			if @state.velocity_y > 0
-				@state.fall(@state.last_direction)
+				@state.fall
 			else
 				@state.action = "jumping_#{@state.last_direction}"
 			end
 		elsif @state.pressed_keys.include?('space') && @state.can_attack
 			@state.action = "attacking_#{@state.last_direction}"
 		elsif @state.velocity_y > 0
-			@state.fall(@state.last_direction)
+			@state.fall
 		end
 	# all other player states must be entered from on the ground
-	elsif is_on_ground
+	elsif @state.is_on_ground?
 		if @state.action.start_with?('attacking')
 			start_attack_timeout
 		end
@@ -105,7 +79,7 @@ update do
 	# player position
 	@state.sprite.y += @state.velocity_y
 
-	if is_on_ground
+	if @state.is_on_ground?
 		@state.velocity_y = 0
 	else
 		@state.velocity_y += PLAYER_WEIGHT
@@ -130,7 +104,7 @@ update do
 		update_background('left')
 	when 'jumping_right'
 		@state.sprite.play(animation: :jump, loop: true)
-		if is_on_ground
+		if @state.is_on_ground?
 			@state.velocity_y -= 20
 		end
 		# Only move when user is also holding directional key
@@ -139,7 +113,7 @@ update do
 		end
 	when 'jumping_left'
 		@state.sprite.play(animation: :jump, loop: true, flip: :horizontal)
-		if is_on_ground
+		if @state.is_on_ground?
 			@state.velocity_y -= 20
 		end
 		# Only move when user is also holding directional key

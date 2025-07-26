@@ -7,6 +7,7 @@ class PlayerState
 	attr_accessor :last_direction
 	attr_accessor :velocity_y
 	attr_accessor :sprite
+	attr_accessor :is_on_ground
 
 
   def initialize(initial_action)
@@ -35,8 +36,16 @@ class PlayerState
 		@velocity_y = 0
   end
 
-	def fall(direction)
+	def fall
 		@action = "falling_#{last_direction}"
 	end
+
+	def jump
+		@action = "jumping_#{last_direction}"
+	end
+
+	def is_on_ground?
+    @sprite.y >= $GAME_HEIGHT - @sprite.height
+  end
 end
 
