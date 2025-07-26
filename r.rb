@@ -14,26 +14,26 @@ set height: $GAME_HEIGHT
 # 16800 / 200 = 84 columns
 # All animations in this sprite sheet point right
 # use the 'flip' property for left pointing animations
-player_sprite = Sprite.new(
-	'dog_sprite_horiz.png',
-	x: $GAME_WIDTH / 2 - PLAYER_WIDTH / 2,
-	y: PLAYER_HEIGHT * -1, # make him drop from the top for fun
-	width: PLAYER_WIDTH,
-	height: PLAYER_HEIGHT,
-	clip_width: PLAYER_WIDTH,
-	clip_height: PLAYER_HEIGHT,
-	time: 60,
-	animations: {
-		stand: 0..6,
-		jump: 7..13,
-		fall: 14..20,
-		run: 21..29,
-		sit: 30..34,
-		attack: 35..41,
-	}
-)
+# player_sprite = Sprite.new(
+# 	'dog_sprite_horiz.png',
+# 	x: $GAME_WIDTH / 2 - PLAYER_WIDTH / 2,
+# 	y: PLAYER_HEIGHT * -1, # make him drop from the top for fun
+# 	width: PLAYER_WIDTH,
+# 	height: PLAYER_HEIGHT,
+# 	clip_width: PLAYER_WIDTH,
+# 	clip_height: PLAYER_HEIGHT,
+# 	time: 60,
+# 	animations: {
+# 		stand: 0..6,
+# 		jump: 7..13,
+# 		fall: 14..20,
+# 		run: 21..29,
+# 		sit: 30..34,
+# 		attack: 35..41,
+# 	}
+# )
 
-@state = PlayerState.new('standing_right', player_sprite)
+@state = PlayerState.new('standing_right')
 
 # Timer
 @attack_timer = Timer.new(2.0)
