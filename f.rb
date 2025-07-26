@@ -1,12 +1,14 @@
 require 'ruby2d'
 require_relative 'source/constants'
 require_relative 'source/state'
+require_relative 'source/enemy'
 
 set title: 'ruby gaming'
 set width: $GAME_WIDTH
 set height: $GAME_HEIGHT
 
 @state = PlayerState.new('standing_right')
+@enemy = Enemy.new('robert')
 
 # event handlers
 on :key_down do |event|
@@ -27,6 +29,7 @@ end
 # animation loop
 update do
 	@state.update
+	@enemy.update
 end
 
 show
