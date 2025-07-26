@@ -1,6 +1,6 @@
 require 'ruby2d'
-require_relative 'constants'
-require_relative 'state'
+require_relative 'source/constants'
+require_relative 'source/state'
 
 set title: 'ruby gaming'
 set width: $GAME_WIDTH

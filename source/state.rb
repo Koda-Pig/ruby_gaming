@@ -11,10 +11,10 @@ class PlayerState
 		@action = initial_action
 		@bg_layers = []
 		BG_LAYERS_COUNT.times do |i|
-			@bg_layers << BackgroundLayer.new("backgrounds/layers/layer_#{i}.webp", i)
+			@bg_layers << BackgroundLayer.new("assets/images/backgrounds/layers/layer_#{i}.webp", i)
 		end
 		@sprite = Sprite.new(
-			'dog_sprite_horiz.png',
+			'assets/images/sprites/dog_sprite_horiz.png',
 			x: $GAME_WIDTH / 2 - PLAYER_WIDTH / 2,
 			y: PLAYER_HEIGHT * -1, # make him drop from the top for fun
 			width: PLAYER_WIDTH,

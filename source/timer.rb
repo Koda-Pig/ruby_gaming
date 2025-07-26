@@ -60,15 +60,13 @@ class Timer
 	end
 
 	def start
+		reset if expired?
 		@active = true
-		if expired? #. reset timer if it was expired
-			reset
-		end
 	end
 
 	def reset
 		@remaining = @duration
-		@active = false # reset timer but don't start it
+		@active = false
 		@progress_circle.radius = @max_radius - 2
 		@progress_circle.color = 'green'
 		@status_text.text = @ready_text
