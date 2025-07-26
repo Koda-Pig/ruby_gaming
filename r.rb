@@ -6,8 +6,6 @@ require_relative 'state'
 
 set title: 'ruby gaming'
 
-@state = PlayerState.new('standing_right')
-
 set width: $GAME_WIDTH
 set height: $GAME_HEIGHT
 
@@ -16,7 +14,7 @@ set height: $GAME_HEIGHT
 # 16800 / 200 = 84 columns
 # All animations in this sprite sheet point right
 # use the 'flip' property for left pointing animations
-@player = Sprite.new(
+player = Sprite.new(
 	'dog_sprite_horiz.png',
 	x: $GAME_WIDTH / 2 - PLAYER_WIDTH / 2,
 	y: PLAYER_HEIGHT * -1, # make him drop from the top for fun
@@ -34,6 +32,8 @@ set height: $GAME_HEIGHT
 		attack: 35..41,
 	}
 )
+
+@state = PlayerState.new('standing_right', player_sprite)
 
 # Timer
 @attack_timer = Timer.new(2.0)
