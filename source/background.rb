@@ -1,7 +1,6 @@
 require_relative 'constants'
 
-# 7 layers for parallax background
-BG_LAYERS_COUNT = 7
+BG_LAYERS_COUNT = 8
 # 2 images per layer so that they can be tiled one after the other
 BG_IMAGES_PER_LAYER = 2
 
@@ -10,8 +9,13 @@ class BackgroundLayer
   attr_accessor :images, :speed_multiplier
 
   def initialize(image_path, layer_index)
-    @speed_multiplier = layer_index * 0.5
     @images = []
+    @is_last = layer_index === BG_LAYERS_COUNT - 1
+    if @is_last
+      @speed_multiplier = layer_index * 0.3
+    else
+      @speed_multiplier = layer_index * 0.01
+    end
 
     # First image starts at x = -$GAME_WIDTH (off-screen to the left)
     @images << Image.new(
@@ -28,6 +32,14 @@ class BackgroundLayer
     )
   end
 
+  def swap(image, side)
+    if side == 'left'
+      image.x += BG_IMAGES_PER_LAYER * $GAME_WIDTH
+    elsif side == 'right'
+      image.x -= BG_IMAGES_PER_LAYER * $GAME_WIDTH
+    end
+  end
+
   def update(direction, base_speed)
     movement = base_speed * @speed_multiplier
 
@@ -41,16 +53,10 @@ class BackgroundLayer
       end
 
       # Wrap around / tiling logic
-      # If image has moved off completely to left side
-      if image.x + $GAME_WIDTH < 0
-        # Find the rightmost image and position this one after it
-        image.x += BG_IMAGES_PER_LAYER * $GAME_WIDTH
-      end
-      # if image has moved off completely to right side
-      if image.x > $GAME_WIDTH
-        # find leftmost image and position this one before it
-        image.x -= BG_IMAGES_PER_LAYER * $GAME_WIDTH
-      end
+      off_screen_left = image.x + $GAME_WIDTH < 0
+      off_screen_right = image.x > $GAME_WIDTH
+      swap(image, 'left') if off_screen_left
+      swap(image, 'right') if off_screen_right
     end
   end
 end
