@@ -5,6 +5,7 @@ require_relative 'timer'
 class PlayerState
   attr_accessor :pressed_keys
 	attr_accessor :last_direction
+	attr_accessor :current_moving_direction
 	attr_accessor :sprite
 
   def initialize(initial_action)
@@ -34,6 +35,7 @@ class PlayerState
 		@pressed_keys = Set.new
 		@can_attack = true
 		@last_direction = 'right'
+		@current_moving_direction = nil
 		@velocity_y = 0
 		@attack_timer = Timer.new(2.0)
   end
@@ -78,7 +80,8 @@ class PlayerState
 		@sprite.y > $GAME_HEIGHT - @sprite.height
 	end
 
-	def update_background(direction, acceleration = 1)
+	def handle_x_movement(direction, acceleration = 1)
+		@current_moving_direction = direction
 		@bg_layers.each do |layer|
 			layer.update(direction, PLAYER_SPEED * acceleration)
 		end
@@ -110,35 +113,38 @@ class PlayerState
 			@sprite.play(animation: :stand, loop: true, flip: :horizontal)
 		when 'running_right'
 			@sprite.play(animation: :run, loop: true)
-			update_background('right')
+			handle_x_movement('right')
 		when 'running_left'
 			@sprite.play(animation: :run, loop: true, flip: :horizontal)
-			update_background('left')
+			handle_x_movement('left')
 		when 'jumping_right'
 			@sprite.play(animation: :jump, loop: true)
 			accelerate_up if is_on_ground?
-			update_background('right') if @pressed_keys.include?('right')
+			handle_x_movement('right') if @pressed_keys.include?('right')
 		when 'jumping_left'
 			@sprite.play(animation: :jump, loop: true, flip: :horizontal)
 			accelerate_up if is_on_ground?
-			update_background('left') if @pressed_keys.include?('left')
+			handle_x_movement('left') if @pressed_keys.include?('left')
 		when 'sitting_right'
 			@sprite.play(animation: :sit, loop: true)
 		when 'sitting_left'
 			@sprite.play(animation: :sit, loop: true, flip: :horizontal)
 		when 'attacking_right'
 			@sprite.play(animation: :attack, loop: true)
-			update_background('right', ATTACK_ACCELERATION)
+			handle_x_movement('right', ATTACK_ACCELERATION)
 		when 'attacking_left'
 			@sprite.play(animation: :attack, loop: true, flip: :horizontal)
-			update_background('left', ATTACK_ACCELERATION)
+			handle_x_movement('left', ATTACK_ACCELERATION)
 		when 'falling_right'
 			@sprite.play(animation: :fall, loop: true)
-			update_background('right') if @pressed_keys.include?('right')
+			handle_x_movement('right') if @pressed_keys.include?('right')
 		when 'falling_left'
 			@sprite.play(animation: :fall, loop: true, flip: :horizontal)
-			update_background('left') if @pressed_keys.include?('left')
+			handle_x_movement('left') if @pressed_keys.include?('left')
 		end
+
+		
+		@current_moving_direction = nil if ['sitting', 'standing'].any? { |dir| @action.start_with?(dir) }
 
 		if !is_on_ground?
 			if @action.start_with?('attack') && !@pressed_keys.include?('space')

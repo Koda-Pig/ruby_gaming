@@ -29,7 +29,7 @@ end
 # animation loop
 update do
 	@state.update
-	@enemy.update
+	@enemy.update(@state.current_moving_direction)
 end
 
 show
