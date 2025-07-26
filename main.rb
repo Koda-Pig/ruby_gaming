@@ -10,7 +10,7 @@ set height: $GAME_HEIGHT
 
 @player = PlayerState.new('standing_right')
 @enemy = Enemy.new('robert')
-@health_bar = HealthBar.new
+@player_health = HealthBar.new
 
 def centered(position, size)
 	position + size * 0.5
@@ -53,7 +53,7 @@ update do
 	@player.update
 	@enemy.update(@player.current_moving_direction)
 	if is_colliding?(@player.sprite, @enemy.sprite)
-		@health_bar.damage(1)
+		@player_health.damage(1)
 	end
 end
 

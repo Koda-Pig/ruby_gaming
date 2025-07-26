@@ -25,7 +25,6 @@ class HealthBar
 
 
 	def damage(amount)
-		# @indicator.width = @indicator.width * health * 0.01
 		@health = [[@health - amount, 100].min, 0].max
 		@indicator.width = @base_width * (@health * 0.01);
 	end

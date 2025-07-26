@@ -8,6 +8,7 @@ class Enemy
 		@name = name
 		@enemy_width = 160
 		@enemy_height = 119
+		@marked_for_deletion = false
 		@sprite = Sprite.new(
 			# 960w / 119h
 			'assets/images/sprites/enemy_1.png',
@@ -26,12 +27,11 @@ class Enemy
   end
 
 	def update(player_movement_direction)
-		case player_movement_direction
-		when 'left'
+		if player_movement_direction == 'left'
 			@sprite.x += PLAYER_SPEED
-		when 'right'
+		elsif player_movement_direction == 'right'
 			@sprite.x -= PLAYER_SPEED + ENEMY_SPEED
-		when nil
+		else
 			@sprite.x -= ENEMY_SPEED
 		end
 	end
