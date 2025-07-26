@@ -32,6 +32,12 @@ class PlayerState
 				attack: 35..41,
 			}
 		)
+		@circle = Circle.new(
+			x: @sprite.x + @sprite.width * 0.5,
+			y: @sprite.y + @sprite.height * 0.5,
+			radius: @sprite.width * 0.5,
+			opacity: 0.5
+		)
 		@pressed_keys = Set.new
 		@can_attack = true
 		@last_direction = 'right'
