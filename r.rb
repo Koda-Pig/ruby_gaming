@@ -12,17 +12,8 @@ set height: $GAME_HEIGHT
 @state = PlayerState.new('standing_right')
 
 # Timer
-@attack_timer = Timer.new(2.0)
 
-def start_attack_timeout
-	@attack_timer.start
-	@state.can_attack = false
-end
 
-def end_attack_timeout
-	@attack_timer.reset
-	@state.can_attack = true
-end
 
 # event handlers
 on :key_down do |event|
@@ -42,39 +33,8 @@ end
 
 # animation loop
 update do
-	# Roll timer logic
-	@attack_timer.update
-	end_attack_timeout if @attack_timer.expired?
 
-	# set player state according to user input
-	if !@state.is_on_ground?
-		if @state.action.start_with?('attack') && !@state.pressed_keys.include?('space')
-			start_attack_timeout
-			if @state.velocity_y > 0
-				@state.fall
-			else
-				@state.action = "jumping_#{@state.last_direction}"
-			end
-		elsif @state.pressed_keys.include?('space') && @state.can_attack
-			@state.action = "attacking_#{@state.last_direction}"
-		elsif @state.velocity_y > 0
-			@state.fall
-		end
-	# all other player states must be entered from on the ground
-	elsif @state.is_on_ground?
-		if @state.action.start_with?('attacking')
-			start_attack_timeout
-		end
-		if @state.pressed_keys.include?('up') && !@state.pressed_keys.include?('space')
-			@state.action = "jumping_#{@state.last_direction}"
-		elsif @state.pressed_keys.include?('down')
-			@state.action = "sitting_#{@state.last_direction}"
-		elsif @state.pressed_keys.include?('right') || @state.pressed_keys.include?('left')
-			@state.action = "running_#{@state.last_direction}"
-		else
-			@state.action = "standing_#{@state.last_direction}"
-		end
-	end
+	@state.update
 
 	# player position
 	@state.sprite.y += @state.velocity_y

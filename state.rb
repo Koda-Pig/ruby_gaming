@@ -7,8 +7,6 @@ class PlayerState
 	attr_accessor :last_direction
 	attr_accessor :velocity_y
 	attr_accessor :sprite
-	attr_accessor :is_on_ground
-
 
   def initialize(initial_action)
 		@action = initial_action
@@ -34,18 +32,75 @@ class PlayerState
 		@can_attack = true
 		@last_direction = 'right'
 		@velocity_y = 0
+		@attack_timer = Timer.new(2.0)
   end
 
 	def fall
-		@action = "falling_#{last_direction}"
+		@action = "falling_#{@last_direction}"
 	end
-
 	def jump
-		@action = "jumping_#{last_direction}"
+		@action = "jumping_#{@last_direction}"
+	end
+	def attack
+		@action = "attacking_#{@last_direction}"
+	end
+	def sit
+		@action = "sitting_#{@last_direction}"
+	end
+	def run
+		@action = "running_#{@last_direction}"
+	end
+	def stand
+		@action = "standing_#{@last_direction}"
 	end
 
+	def start_attack_timeout
+		@attack_timer.start
+		@can_attack = false
+	end
+
+	def end_attack_timeout
+		@attack_timer.reset
+		@can_attack = true
+	end
+	
 	def is_on_ground?
     @sprite.y >= $GAME_HEIGHT - @sprite.height
   end
+
+	def update
+		# Roll timer logic
+		end_attack_timeout if @attack_timer.expired?
+		@attack_timer.update
+
+		if !is_on_ground?
+			if @action.start_with?('attack') && !@pressed_keys.include?('space')
+				start_attack_timeout
+				if @velocity_y > 0
+					fall
+				else
+					jump
+				end
+			elsif @pressed_keys.include?('space') && @can_attack
+				attack
+			elsif @velocity_y > 0
+				fall
+			end
+		# all other player states must be entered from on the ground
+		elsif is_on_ground?
+			if @action.start_with?('attacking')
+				start_attack_timeout
+			end
+			if @pressed_keys.include?('up') && !@pressed_keys.include?('space')
+				jump
+			elsif @pressed_keys.include?('down')
+				sit
+			elsif @pressed_keys.include?('right') || @pressed_keys.include?('left')
+				run
+			else
+				stand
+			end
+		end
+	end
 end
 
