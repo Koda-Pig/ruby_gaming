@@ -4,7 +4,6 @@ require_relative 'timer'
 
 class PlayerState
   attr_accessor :pressed_keys
-	attr_accessor :action
 	attr_accessor :can_attack
 	attr_accessor :last_direction
 	attr_accessor :velocity_y
@@ -120,11 +119,11 @@ class PlayerState
 		when 'jumping_right'
 			@sprite.play(animation: :jump, loop: true)
 			accelerate_up if is_on_ground?
-			update_background('right') if pressed_keys.include?('right')
+			update_background('right') if @pressed_keys.include?('right')
 		when 'jumping_left'
 			@sprite.play(animation: :jump, loop: true, flip: :horizontal)
 			accelerate_up if is_on_ground?
-			update_background('left') if pressed_keys.include?('left')
+			update_background('left') if @pressed_keys.include?('left')
 		when 'sitting_right'
 			@sprite.play(animation: :sit, loop: true)
 		when 'sitting_left'
