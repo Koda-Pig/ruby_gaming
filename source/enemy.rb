@@ -2,6 +2,7 @@ require_relative 'constants'
 
 class Enemy
 	attr_accessor :x
+	attr_accessor :sprite
 
   def initialize(name)
 		@name = name

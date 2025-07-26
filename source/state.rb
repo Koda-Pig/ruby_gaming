@@ -93,6 +93,11 @@ class PlayerState
 		end
 	end
 
+	def draw_collision_helper_circle
+		@circle.x = @sprite.x + @sprite.width * 0.5
+		@circle.y = @sprite.y + @sprite.height * 0.5
+	end
+
 	def update
 		# Roll timer logic
 		end_attack_timeout if @attack_timer.expired?
@@ -180,5 +185,7 @@ class PlayerState
 				stand
 			end
 		end
+
+		draw_collision_helper_circle
 	end
 end
