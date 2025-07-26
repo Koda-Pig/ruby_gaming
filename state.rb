@@ -68,10 +68,27 @@ class PlayerState
     @sprite.y >= $GAME_HEIGHT - @sprite.height
   end
 
+	def is_below_floor?
+		@sprite.y > $GAME_HEIGHT - @sprite.height
+	end
+
 	def update
 		# Roll timer logic
 		end_attack_timeout if @attack_timer.expired?
 		@attack_timer.update
+
+		# player position
+		@sprite.y += @velocity_y
+
+		if is_on_ground?
+			@velocity_y = 0
+		else
+			@velocity_y += PLAYER_WEIGHT
+		end
+
+		if is_below_floor?
+			@sprite.y = $GAME_HEIGHT - @sprite.height
+		end
 
 		if !is_on_ground?
 			if @action.start_with?('attack') && !@pressed_keys.include?('space')

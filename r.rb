@@ -36,20 +36,6 @@ update do
 
 	@state.update
 
-	# player position
-	@state.sprite.y += @state.velocity_y
-
-	if @state.is_on_ground?
-		@state.velocity_y = 0
-	else
-		@state.velocity_y += PLAYER_WEIGHT
-	end
-
-	# prevent player falling through floor
-	if @state.sprite.y > $GAME_HEIGHT - @state.sprite.height
-		@state.sprite.y = $GAME_HEIGHT - @state.sprite.height
-	end
-
 	# handle each state
 	case @state.action
 	when 'standing_right'
