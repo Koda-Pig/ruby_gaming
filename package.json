@@ -1,0 +1,11 @@
+{
+  "name": "ruby_gaming",
+  "version": "1.0.0",
+  "description": "## Resources",
+  "main": "main.rb",
+  "scripts": {
+    "dev": "ruby main.rb"
+  },
+  "author": "",
+  "license": "ISC"
+}

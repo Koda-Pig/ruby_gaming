@@ -2,6 +2,7 @@ require 'ruby2d'
 require_relative 'source/constants'
 require_relative 'source/state'
 require_relative 'source/enemy'
+require_relative 'source/health_bar'
 
 set title: 'ruby gaming'
 set width: $GAME_WIDTH
@@ -9,6 +10,7 @@ set height: $GAME_HEIGHT
 
 @player = PlayerState.new('standing_right')
 @enemy = Enemy.new('robert')
+@health_bar = HealthBar.new
 
 def centered(position, size)
 	position + size * 0.5
@@ -51,7 +53,7 @@ update do
 	@player.update
 	@enemy.update(@player.current_moving_direction)
 	if is_colliding?(@player.sprite, @enemy.sprite)
-		puts "is colliding"
+		@health_bar.damage(1)
 	end
 end
 
