@@ -41,9 +41,14 @@ set height: $GAME_HEIGHT
 # Timer
 @attack_timer = Timer.new(2.0)
 
-def reset_attack
+def start_attack_timeout
 	@attack_timer.start
 	@state.can_attack = false
+end
+
+def end_attack_timeout
+	@state.can_attack = true
+	@attack_timer.reset
 end
 
 # event handlers
@@ -70,13 +75,13 @@ update do
 	@attack_timer.update
 
 	if @attack_timer.expired?
-		@state.can_attack = true
-		@attack_timer.reset
+		end_attack_timeout
 	end
 
 	# set player state according to user input
 	if !is_on_ground
 		if @state.action.start_with?('attack') && !@state.pressed_keys.include?('space')
+			start_attack_timeout
 			if velocity_y > 0
 				@state.action = "falling_#{last_direction}"
 			else
@@ -89,6 +94,9 @@ update do
 		end
 	# all other player states must be entered from on the ground
 	elsif is_on_ground
+		if @state.action.start_with?('attacking')
+			start_attack_timeout
+		end
 		if @state.pressed_keys.include?('up') && !@state.pressed_keys.include?('space')
 			@state.action = "jumping_#{last_direction}"
 		elsif @state.pressed_keys.include?('down')
