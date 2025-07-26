@@ -6,9 +6,6 @@ require_relative 'state'
 
 set title: 'ruby gaming'
 
-last_direction = 'right'
-velocity_y = 0
-
 @state = PlayerState.new('standing_right')
 
 set width: $GAME_WIDTH
@@ -56,7 +53,7 @@ on :key_down do |event|
 	case event.key
 	when *VALID_KEYS # using the 'splat' operator here to expand the VALID_KEYS array
 		@state.pressed_keys << event.key
-		last_direction = event.key if ['left', 'right'].include?(event.key)
+		@state.last_direction = event.key if ['left', 'right'].include?(event.key)
 	when 'escape'
 		close
 	end
@@ -73,24 +70,21 @@ update do
 
 	# Roll timer logic
 	@attack_timer.update
-
-	if @attack_timer.expired?
-		end_attack_timeout
-	end
+	end_attack_timeout if @attack_timer.expired?
 
 	# set player state according to user input
 	if !is_on_ground
 		if @state.action.start_with?('attack') && !@state.pressed_keys.include?('space')
 			start_attack_timeout
-			if velocity_y > 0
-				@state.action = "falling_#{last_direction}"
+			if @state.velocity_y > 0
+				@state.fall(@state.last_direction)
 			else
-				@state.action = "jumping_#{last_direction}"
+				@state.action = "jumping_#{@state.last_direction}"
 			end
 		elsif @state.pressed_keys.include?('space') && @state.can_attack
-			@state.action = "attacking_#{last_direction}"
-		elsif velocity_y > 0
-			@state.action = "falling_#{last_direction}"
+			@state.action = "attacking_#{@state.last_direction}"
+		elsif @state.velocity_y > 0
+			@state.fall(@state.last_direction)
 		end
 	# all other player states must be entered from on the ground
 	elsif is_on_ground
@@ -98,23 +92,23 @@ update do
 			start_attack_timeout
 		end
 		if @state.pressed_keys.include?('up') && !@state.pressed_keys.include?('space')
-			@state.action = "jumping_#{last_direction}"
+			@state.action = "jumping_#{@state.last_direction}"
 		elsif @state.pressed_keys.include?('down')
-			@state.action = "sitting_#{last_direction}"
+			@state.action = "sitting_#{@state.last_direction}"
 		elsif @state.pressed_keys.include?('right') || @state.pressed_keys.include?('left')
-			@state.action = "running_#{last_direction}"
+			@state.action = "running_#{@state.last_direction}"
 		else
-			@state.action = "standing_#{last_direction}"
+			@state.action = "standing_#{@state.last_direction}"
 		end
 	end
 
 	# player position
-	@player.y += velocity_y
+	@player.y += @state.velocity_y
 
 	if is_on_ground
-		velocity_y = 0
+		@state.velocity_y = 0
 	else
-		velocity_y += PLAYER_WEIGHT
+		@state.velocity_y += PLAYER_WEIGHT
 	end
 
 	# prevent player falling through floor
@@ -137,7 +131,7 @@ update do
 	when 'jumping_right'
 		@player.play(animation: :jump, loop: true)
 		if is_on_ground
-			velocity_y -= 20
+			@state.velocity_y -= 20
 		end
 		# Only move when user is also holding directional key
 		if @state.pressed_keys.include?('right')
@@ -146,7 +140,7 @@ update do
 	when 'jumping_left'
 		@player.play(animation: :jump, loop: true, flip: :horizontal)
 		if is_on_ground
-			velocity_y -= 20
+			@state.velocity_y -= 20
 		end
 		# Only move when user is also holding directional key
 		if @state.pressed_keys.include?('left')

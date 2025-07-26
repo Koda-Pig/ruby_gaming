@@ -13,6 +13,7 @@ class Timer
 		@remaining = duration
 		@active = false
 		@max_radius = radius
+		@ready_text = 'ATTACK (space)'
 		
 		@background_circle = Circle.new(
 			x: @x + @max_radius,
@@ -27,7 +28,7 @@ class Timer
 			color: 'green',
 		)
 		@status_text = Text.new(
-			'READY',
+			@ready_text,
 			x: @x + @max_radius + 30,
 			y: @y + @max_radius - 14,
 			size: 20,
@@ -70,6 +71,6 @@ class Timer
 		@active = false # reset timer but don't start it
 		@progress_circle.radius = @max_radius - 2
 		@progress_circle.color = 'green'
-		@status_text.text = 'READY'
+		@status_text.text = @ready_text
 	end
 end
