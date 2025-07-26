@@ -39,7 +39,6 @@ class PlayerState
 		@last_direction = 'right'
 		@velocity_y = 0
 		@attack_timer = Timer.new(2.0)
-
   end
 
 	def fall
@@ -59,6 +58,9 @@ class PlayerState
 	end
 	def stand
 		@action = "standing_#{@last_direction}"
+	end
+	def accelerate_up
+		@velocity_y -= 20
 	end
 
 	def start_attack_timeout
@@ -117,18 +119,11 @@ class PlayerState
 			update_background('left')
 		when 'jumping_right'
 			@sprite.play(animation: :jump, loop: true)
-			if is_on_ground?
-				@velocity_y -= 20
-			end
-			# Only move when user is also holding directional key
-			if pressed_keys.include?('right')
-				update_background('right')
-			end
+			accelerate_up if is_on_ground?
+			update_background('right') if pressed_keys.include?('right')
 		when 'jumping_left'
 			@sprite.play(animation: :jump, loop: true, flip: :horizontal)
-			if is_on_ground?
-				@velocity_y -= 20
-			end
+			accelerate_up if is_on_ground?
 			# Only move when user is also holding directional key
 			if pressed_keys.include?('left')
 				update_background('left')
