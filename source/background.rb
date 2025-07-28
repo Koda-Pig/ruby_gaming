@@ -12,7 +12,7 @@ class BackgroundLayer
     @images = []
     @is_last = layer_index === BG_LAYERS_COUNT - 1
     if @is_last
-      @speed_multiplier = layer_index * 0.3
+      @speed_multiplier = layer_index * 0.04
     else
       @speed_multiplier = layer_index * 0.01
     end
