@@ -14,3 +14,4 @@ OK done. Now what?
 ## Todos:
 
 1. add a double jump
+2. Refine the handling of user/ background movement. Currently this looks janky. Logic for this housed in background.rb
