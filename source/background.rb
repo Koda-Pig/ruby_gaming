@@ -10,9 +10,9 @@ class BackgroundLayer
 
   def initialize(image_path, layer_index)
     @images = []
-    @is_last = layer_index === BG_LAYERS_COUNT - 1
+    @is_last = layer_index == BG_LAYERS_COUNT - 1
     if @is_last
-      @speed_multiplier = layer_index * 0.04
+      @speed_multiplier = 1 # last layer (in foreground) has base speed rate
     else
       @speed_multiplier = layer_index * 0.01
     end
